@@ -3,9 +3,13 @@ import axios from 'axios';
 // NO SYNTAX HIGHLIGHTER IMPORTS NEEDED!
 
 // --- API Configuration ---
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
-const apiClient = axios.create({
-  baseURL: API_BASE_URL,
+// Check if VITE_API_URL is set (production) or not (development)
+const API_URL = import.meta.env.VITE_API_URL
+  ? `${import.meta.env.VITE_API_URL}/api` // Production: Add /api to the base URL
+  : 'http://localhost:5000/api';         // Development: Use the full localhost URL
+
+  const apiClient = axios.create({
+  baseURL: API_URL, // This is now the *full* API path
 });
 
 
