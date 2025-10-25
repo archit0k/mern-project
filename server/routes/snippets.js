@@ -9,11 +9,12 @@ router.get('/', async (req, res) => {
     const query = search ? {
       $or: [
         { title: { $regex: search, $options: 'i' } },
-        { category: { $regex: search, $options: 'i' } },
-        { description: { $regex: search, $options: 'i' } }
+        { description: { $regex: search, $options: 'i' } },
+        // --- UPDATED TO SEARCH THE TAGS ARRAY ---
+        { tags: { $regex: search, $options: 'i' } }
       ]
     } : {};
-    // Sort by newest first
+    
     const snippets = await Snippet.find(query).sort({ createdAt: -1 });
     res.json(snippets);
   } catch (err) {
@@ -23,8 +24,16 @@ router.get('/', async (req, res) => {
 
 // POST a new snippet
 router.post('/', async (req, res) => {
-  const { title, category, code, description } = req.body;
-  const snippet = new Snippet({ title, category, code, description });
+  // --- UPDATED to get 'tags' instead of 'category' ---
+  const { title, tags, code, description } = req.body;
+  const snippet = new Snippet({ 
+    title, 
+    // Ensure tags is an array, even if empty
+    tags: tags || [], 
+    code, 
+    description 
+  });
+  
   try {
     const newSnippet = await snippet.save();
     res.status(201).json(newSnippet);
@@ -36,7 +45,13 @@ router.post('/', async (req, res) => {
 // PUT (update) a snippet by ID
 router.put('/:id', async (req, res) => {
   try {
-    const updatedSnippet = await Snippet.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    // --- UPDATED to include 'tags' ---
+    // We can just pass req.body directly, as it will contain the new { title, tags, description, code }
+    const updatedSnippet = await Snippet.findByIdAndUpdate(
+      req.params.id, 
+      req.body, 
+      { new: true }
+    );
     if (!updatedSnippet) return res.status(404).json({ message: "Snippet not found" });
     res.json(updatedSnippet);
   } catch (err) {
@@ -55,4 +70,21 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
+// PUT /api/snippets/:id/toggle-favorite 
+// (This route needs no changes as it doesn't touch tags)
+router.put('/:id/toggle-favorite', async (req, res) => {
+  try {
+    const snippet = await Snippet.findById(req.params.id);
+    if (!snippet) return res.status(404).json({ message: "Snippet not found" });
+
+    snippet.isFavorite = !snippet.isFavorite;
+
+    const updatedSnippet = await snippet.save();
+    res.json(updatedSnippet);
+  } catch (err) {
+    res.status(400).json({ message: "Error toggling favorite: " + err.message });
+  }
+});
+
 module.exports = router;
+

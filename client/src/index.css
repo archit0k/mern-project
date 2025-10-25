@@ -294,14 +294,10 @@ body {
   background: #3f3f3f;
 }
 
-/* The code-block <pre> and <code> tags will be styled 
-  by the Prism.js okaidia theme we loaded in index.html 
-*/
 .code-block pre {
   border-radius: 8px !important;
   border: 1px solid var(--border-color) !important;
   font-size: 0.95rem;
-  /* The <pre> tag from prism.js comes with its own padding and margin */
 }
 
 .snippet-actions {
@@ -333,10 +329,8 @@ body {
   max-width: 700px;
   border: 1px solid var(--border-color);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-
-  /* --- ADD THESE TWO LINES --- */
-  max-height: 90vh;  /* 1. Never be taller than 90% of the viewport height */
-  overflow-y: auto;  /* 2. If content is too long, add a vertical scrollbar */
+  max-height: 90vh;
+  overflow-y: auto;
 }
 
 .modal-content h2 {
@@ -393,4 +387,49 @@ body {
   padding: 1rem 1.5rem;
   text-align: center;
   color: var(--text-muted);
+}
+
+
+/* --- Markdown Styles --- */
+/* This is the new section! */
+.description-markdown {
+  font-size: 1.1rem;
+  color: var(--text-muted);
+  margin-bottom: 1.5rem;
+  line-height: 1.7;
+}
+
+/* Style for inline code `code` */
+.description-markdown :not(pre) > code {
+  background-color: var(--bg-lighter);
+  color: #c7c7c7;
+  padding: 0.2em 0.4em;
+  border-radius: 4px;
+  font-size: 0.9em;
+  border: 1px solid var(--border-color);
+}
+
+/* Style for links [text](url) */
+.description-markdown a {
+  color: var(--primary-color);
+  text-decoration: none;
+}
+.description-markdown a:hover {
+  text-decoration: underline;
+}
+
+/* Style for lists */
+.description-markdown ul,
+.description-markdown ol {
+  padding-left: 2rem;
+  margin-bottom: 1rem;
+}
+
+/* Style for blockquotes > quote */
+.description-markdown blockquote {
+  border-left: 4px solid var(--border-color);
+  padding-left: 1rem;
+  margin-left: 0;
+  color: var(--text-muted);
+  font-style: italic;
 }
